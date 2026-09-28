@@ -22,7 +22,7 @@
   backdrop?.addEventListener("click", () => setMenu(false));
   menu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setMenu(false)));
   document.addEventListener("keydown", e => { if (e.key === "Escape") setMenu(false); });
-  window.addEventListener("scroll", () => header?.classList.toggle("scrolled", scrollY > 30), {passive:true});
+  window.addEventListener("scroll", () => header?.classList.toggle("scrolled", window.scrollY > 30), {passive:true});
 
   document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", e => {
     const el = document.querySelector(a.getAttribute("href"));
