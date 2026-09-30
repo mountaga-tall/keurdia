@@ -1,4 +1,4 @@
-const CACHE = "keurdia-v13";
+const CACHE = "keurdia-v14";
 const CORE = [
   "./",
   "./index.html",
