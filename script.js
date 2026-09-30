@@ -254,6 +254,62 @@
     "/contact.html": {
       title: ["Réservation — Keur Ndeye Anta Dia", "Booking — Keur Ndeye Anta Dia"],
       description: ["Réserver un appartement à Keur Ndeye Anta Dia à Dakar.", "Book an apartment at Keur Ndeye Anta Dia in Dakar."]
+    },
+    "/baol.html": {
+      title: ["Baol — Keur Ndeye Anta Dia", "Baol — Keur Ndeye Anta Dia"],
+      description: ["Un espace élégant et chaleureux pensé pour un séjour confortable.", "An elegant, welcoming space designed for a comfortable stay."]
+    },
+    "/cayor.html": {
+      title: ["Cayor — Keur Ndeye Anta Dia", "Cayor — Keur Ndeye Anta Dia"],
+      description: ["Une atmosphère raffinée associant modernité et authenticité.", "A refined atmosphere combining modernity and authenticity."]
+    },
+    "/damel.html": {
+      title: ["Damel — Keur Ndeye Anta Dia", "Damel — Keur Ndeye Anta Dia"],
+      description: ["Un cocon contemporain avec une identité élégante et chaleureuse.", "A contemporary cocoon with an elegant, welcoming identity."]
+    },
+    "/foutahto.html": {
+      title: ["Fouta Toro — Keur Ndeye Anta Dia", "Fouta Toro — Keur Ndeye Anta Dia"],
+      description: ["Un espace lumineux offrant une expérience douce et reposante.", "A bright space offering a gentle, restful experience."]
+    },
+    "/niani.html": {
+      title: ["Niani — Keur Ndeye Anta Dia", "Niani — Keur Ndeye Anta Dia"],
+      description: ["Une ambiance élégante inspirée par les richesses du patrimoine sénégalais.", "An elegant atmosphere inspired by Senegal's rich heritage."]
+    },
+    "/ndiambour.html": {
+      title: ["Ndiambour — Keur Ndeye Anta Dia", "Ndiambour — Keur Ndeye Anta Dia"],
+      description: ["Un cadre confortable pour profiter pleinement de votre séjour.", "A comfortable setting to make the most of your stay."]
+    },
+    "/sine.html": {
+      title: ["Sine — Keur Ndeye Anta Dia", "Sine — Keur Ndeye Anta Dia"],
+      description: ["Un univers apaisant où chaque détail invite à la détente.", "A peaceful world where every detail invites relaxation."]
+    },
+    "/saloum.html": {
+      title: ["Saloum — Keur Ndeye Anta Dia", "Saloum — Keur Ndeye Anta Dia"],
+      description: ["Une atmosphère chaleureuse entre élégance, confort et caractère.", "A warm atmosphere combining elegance, comfort and character."]
+    },
+    "/waalo.html": {
+      title: ["Waalo — Keur Ndeye Anta Dia", "Waalo — Keur Ndeye Anta Dia"],
+      description: ["Un espace moderne et accueillant pour vivre Dakar autrement.", "A modern, welcoming space for experiencing Dakar differently."]
+    },
+    "/djolof.html": {
+      title: ["Djolof — Keur Ndeye Anta Dia", "Djolof — Keur Ndeye Anta Dia"],
+      description: ["Un cadre de caractère qui mêle authenticité et confort contemporain.", "A distinctive setting blending authenticity with contemporary comfort."]
+    },
+    "/thiossane.html": {
+      title: ["Thiossane — Keur Ndeye Anta Dia", "Thiossane — Keur Ndeye Anta Dia"],
+      description: ["Une parenthèse élégante conçue pour votre bien-être.", "An elegant pause designed for your wellbeing."]
+    },
+    "/waalo.html": {
+      title: ["Waalo — Keur Ndeye Anta Dia", "Waalo — Keur Ndeye Anta Dia"],
+      description: ["Un espace moderne et accueillant pour vivre Dakar autrement.", "A modern, welcoming space for experiencing Dakar differently."]
+    },
+    "/wuri.html": {
+      title: ["Wuri — Keur Ndeye Anta Dia", "Wuri — Keur Ndeye Anta Dia"],
+      description: ["Un espace pensé pour offrir sérénité, intimité et confort.", "A space designed to offer serenity, privacy and comfort."]
+    },
+    "/farafina.html": {
+      title: ["Farafina — Keur Ndeye Anta Dia", "Farafina — Keur Ndeye Anta Dia"],
+      description: ["Notre nouvelle adresse, pensée comme une expérience élégante, moderne et chaleureuse.", "Our newest address, designed as an elegant, modern and welcoming experience."]
     }
   };
 
@@ -280,38 +336,24 @@
   }
 
   function translateContent(language) {
-    const contentReplacements = [
-      ["Confort & élégance", "Comfort & elegance"],
-      ["Accueil", "Home"],
-      ["Appartements", "Apartments"],
-      ["Expérience", "Experience"],
-      ["Réserver sur WhatsApp", "Book on WhatsApp"],
-      ["Disponibilités & tarifs", "Availability & rates"],
-      ["Réserver", "Book now"],
-      ["Découvrir les appartements", "Discover the apartments"],
-      ["Voir les 13 appartements", "See all 13 apartments"],
-      ["Découvrir", "Discover"],
-      ["Ouvrir", "Open"],
-      ["Voir la galerie", "View gallery"],
-      ["Galerie", "Gallery"],
-      ["Chargement…", "Loading…"],
-      ["Photo indisponible.", "Photo unavailable."],
-      ["Précédente", "Previous"],
-      ["Suivante", "Next"],
-      ["Navigation", "Navigation"],
-      ["Réservation", "Booking"],
-      ["Résidence premium · Dakar", "Premium residence · Dakar"],
-      ["Votre prochaine adresse", "Your next address"],
-      ["Votre séjour", "Your stay"],
-      ["Préparation de votre expérience", "Preparing your experience"]
-    ];
+    const translationPairs = [...translationHtml.entries()]
+      .sort((a, b) => b[0].length - a[0].length);
 
     const replaceText = (value, targetLanguage) => {
       if (targetLanguage === "fr") return value;
-      let result = value;
-      for (const [fr, en] of contentReplacements) {
+      const raw = String(value);
+      const trimmed = raw.trim();
+      if (translationHtml.has(trimmed)) {
+        return raw.replace(trimmed, translationHtml.get(trimmed));
+      }
+
+      let result = raw;
+      for (const [fr, en] of translationPairs) {
         result = result.split(fr).join(en);
       }
+
+      result = result.replace(/\bAppartement (\d+)\b/g, "Apartment $1");
+      result = result.replace(/\b(\d+) photo chargée\b/g, "$1 photo loaded");
       return result;
     };
 
@@ -334,6 +376,9 @@
         el.setAttribute(name, language === "en" ? replaceText(value, language) : value);
       });
     });
+
+    const languageSwitch = document.getElementById("langSwitch");
+    if (languageSwitch) languageSwitch.setAttribute("aria-label", language === "en" ? "Language" : "Langue");
 
     document.documentElement.lang = language;
     const path = location.pathname.replace(/index\.html$/, "/") || "/";
