@@ -136,6 +136,8 @@
     ["Téléphone *", "Phone *"],
     ["Email *", "Email *"],
     ["Appartement *", "Apartment *"],
+    ["Voyageurs *", "Guests *"],
+    ["Nombre de voyageurs requis.", "Guest count is required."],
     ["Arrivée *", "Arrival *"],
     ["Départ *", "Departure *"],
     ["Message", "Message"],
@@ -399,6 +401,7 @@
     localStorage.setItem("keurdia-lang", language);
     state.language = language;
     updateWhatsAppLinks();
+    window.KeurDiaAmenities?.render(language);
     translateTextNodes(language);
     translateCompoundComponents(language);
   }
@@ -478,8 +481,8 @@
     gallery.pos = (pos + gallery.images.length) % gallery.images.length;
     const requestId = ++gallery.requestId;
     const n = gallery.images[gallery.pos];
-
-    counter.textContent = `${gallery.pos + 1} / ${gallery.images.length}`;
+    counter.textContent = (gallery.pos + 1) + " / " + gallery.images.length;
+    counter.setAttribute("aria-label", state.language === "en" ? "Photo " + (gallery.pos + 1) + " of " + gallery.images.length : "Photo " + (gallery.pos + 1) + " sur " + gallery.images.length);
     loading.style.display = "grid";
     empty.style.display = "none";
     image.style.opacity = "0";
@@ -488,11 +491,14 @@
       if (requestId !== gallery.requestId) return;
       loading.style.display = "none";
       image.style.opacity = "1";
-      const nextNumber = gallery.images[gallery.pos + 1];
-      if (nextNumber !== undefined) {
+      [-1, 1].forEach(delta => {
+        const adjacentPos = (gallery.pos + delta + gallery.images.length) % gallery.images.length;
+        const adjacentNumber = gallery.images[adjacentPos];
+        if (adjacentNumber === undefined || adjacentPos === gallery.pos) return;
         const preloader = new Image();
-        preloader.src = `${gallery.prefix}${nextNumber}.${gallery.ext}`;
-      }
+        preloader.decoding = "async";
+        preloader.src = gallery.prefix + adjacentNumber + "." + gallery.ext;
+      });
     };
 
     image.onerror = () => {
@@ -552,9 +558,24 @@
     if (e.key === "ArrowRight") loadPhoto(gallery.pos + 1);
   });
 
+  let galleryTouchStartX = 0;
+  let galleryTouchStartY = 0;
+  modal?.addEventListener("touchstart", event => {
+    if (!modal.classList.contains("open") || !event.touches[0]) return;
+    galleryTouchStartX = event.touches[0].clientX;
+    galleryTouchStartY = event.touches[0].clientY;
+  }, { passive: true });
+  modal?.addEventListener("touchend", event => {
+    if (!modal.classList.contains("open") || !event.changedTouches[0]) return;
+    const dx = event.changedTouches[0].clientX - galleryTouchStartX;
+    const dy = event.changedTouches[0].clientY - galleryTouchStartY;
+    if (Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy)) return;
+    loadPhoto(dx < 0 ? gallery.pos + 1 : gallery.pos - 1);
+  }, { passive: true });
+
   const form = document.getElementById("reservationForm");
   if (form) {
-    const ids = ["firstName", "lastName", "phone", "email", "residence", "arrival", "departure"];
+    const ids = ["firstName", "lastName", "phone", "email", "residence", "guests", "arrival", "departure"];
     const fields = ids.map(id => document.getElementById(id)).filter(Boolean);
     const arrival = document.getElementById("arrival");
     const departure = document.getElementById("departure");
@@ -612,28 +633,39 @@
       const messageValue = document.getElementById("message")?.value.trim() || (state.language === "en" ? "No additional message" : "Aucun message supplémentaire");
 
       const labels = state.language === "en"
-        ? ["Hello Keur Ndeye Anta Dia, I would like to request a booking.", "Last name:", "First name:", "Phone:", "Email:", "Apartment:", "Arrival:", "Departure:", "Message:"]
-        : ["Bonjour Keur Ndeye Anta Dia, je souhaite faire une demande de réservation.", "Nom :", "Prénom :", "Tél :", "Email :", "Résidence :", "Arrivée :", "Départ :", "Message :"];
+        ? ["Hello Keur Ndeye Anta Dia, I would like to request a booking.", "Last name:", "First name:", "Phone:", "Email:", "Apartment:", "Guests:", "Arrival:", "Departure:", "Message:"]
+        : ["Bonjour Keur Ndeye Anta Dia, je souhaite faire une demande de réservation.", "Nom :", "Prénom :", "Tél :", "Email :", "Résidence :", "Voyageurs :", "Arrivée :", "Départ :", "Message :"];
 
       const text = [
         labels[0],
-        `${labels[1]} ${document.getElementById("lastName")?.value.trim() || ""}`,
-        `${labels[2]} ${document.getElementById("firstName")?.value.trim() || ""}`,
-        `${labels[3]} ${code} ${phone?.value.trim() || ""}`,
-        `${labels[4]} ${email?.value.trim() || ""}`,
-        `${labels[5]} ${roomValue}`,
-        `${labels[6]} ${arrival?.value || ""}`,
-        `${labels[7]} ${departure?.value || ""}`,
-        `${labels[8]} ${messageValue}`
-      ].join("\n");
-
-      const success = document.getElementById("formSuccess");
+        labels[1] + " " + (document.getElementById("lastName")?.value.trim() || ""),
+        labels[2] + " " + (document.getElementById("firstName")?.value.trim() || ""),
+        labels[3] + " " + code + " " + (phone?.value.trim() || ""),
+        labels[4] + " " + (email?.value.trim() || ""),
+        labels[5] + " " + roomValue,
+        labels[6] + " " + (document.getElementById("guests")?.value || ""),
+        labels[7] + " " + (arrival?.value || ""),
+        labels[8] + " " + (departure?.value || ""),
+        labels[9] + " " + messageValue
+      ].join("\n");      const success = document.getElementById("formSuccess");
       if (success) success.style.display = "block";
       window.location.assign(wa(text));
     });
   }
 
+  const topButton = document.createElement("button");
+  topButton.type = "button";
+  topButton.className = "back-to-top";
+  topButton.setAttribute("aria-label", "Retour en haut");
+  topButton.textContent = "↑";
+  document.body.appendChild(topButton);
+  const updateTopButton = () => topButton.classList.toggle("is-visible", window.scrollY > 700);
+  window.addEventListener("scroll", updateTopButton, { passive: true });
+  topButton.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+  updateTopButton();
+
   ensureLanguageSwitch();
+  window.KeurDiaAmenities?.render(state.language);
   translateContent(state.language);
 
   if ("serviceWorker" in navigator) {
