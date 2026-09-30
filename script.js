@@ -141,7 +141,20 @@
     ["photo chargée", "photo loaded"],
     ["Fermer", "Close"],
     ["Précédente", "Previous"],
-    ["Suivante", "Next"]
+    ["Suivante", "Next"],
+    ["Un espace élégant et chaleureux pensé pour un séjour confortable.", "An elegant, welcoming space designed for a comfortable stay."],
+    ["Une atmosphère raffinée associant modernité et authenticité.", "A refined atmosphere combining modernity and authenticity."],
+    ["Un cocon contemporain avec une identité élégante et chaleureuse.", "A contemporary cocoon with an elegant, welcoming identity."],
+    ["Un espace lumineux offrant une expérience douce et reposante.", "A bright space offering a gentle, restful experience."],
+    ["Une ambiance élégante inspirée par les richesses du patrimoine sénégalais.", "An elegant atmosphere inspired by Senegal's rich heritage."],
+    ["Un cadre confortable pour profiter pleinement de votre séjour.", "A comfortable setting to make the most of your stay."],
+    ["Un univers apaisant où chaque détail invite à la détente.", "A peaceful world where every detail invites relaxation."],
+    ["Une atmosphère chaleureuse entre élégance, confort et caractère.", "A warm atmosphere combining elegance, comfort and character."],
+    ["Un espace moderne et accueillant pour vivre Dakar autrement.", "A modern, welcoming space for experiencing Dakar differently."],
+    ["Un cadre de caractère qui mêle authenticité et confort contemporain.", "A distinctive setting blending authenticity with contemporary comfort."],
+    ["Une parenthèse élégante conçue pour votre bien-être.", "An elegant pause designed for your wellbeing."],
+    ["Un espace pensé pour offrir sérénité, intimité et confort.", "A space designed to offer serenity, privacy and comfort."],
+    ["Notre nouvelle adresse, pensée comme une expérience élégante, moderne et chaleureuse.", "Our newest address, designed as an elegant, modern and welcoming experience."]
   ]);
 
   const complexTranslations = new Map([
@@ -205,14 +218,24 @@
     return (originalNodes.get(el) || el.innerHTML || el.textContent).trim();
   }
 
+  function translateSource(source) {
+    if (translationHtml.has(source)) return translationHtml.get(source);
+    const apartmentNumber = source.match(/^Appartement (\\d+)$/);
+    if (apartmentNumber) return `Apartment ${apartmentNumber[1]}`;
+    const loaded = source.match(/^(\\d+) photo chargée$/);
+    if (loaded) return `${loaded[1]} photo loaded`;
+    return null;
+  }
+
   function translateContent(language) {
     originalNodes.forEach((html, el) => {
       const source = html.replace(/<[^>]+>/g, "").trim();
-      if (!translationHtml.has(source)) {
+      const translated = translateSource(source);
+      if (!translated) {
         el.innerHTML = html;
         return;
       }
-      el.innerHTML = language === "en" ? translationHtml.get(source) : html;
+      el.innerHTML = language === "en" ? translated : html;
     });
 
     complexOriginals.forEach((html, el) => {
@@ -221,7 +244,7 @@
         return;
       }
       const source = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-      const translated = complexTranslations.get(source);
+      const translated = complexTranslations.get(source) || translateSource(source);
       if (translated) el.innerHTML = translated;
     });
 
@@ -231,7 +254,8 @@
           el.setAttribute(name, value);
           return;
         }
-        if (translationHtml.has(value.trim())) el.setAttribute(name, translationHtml.get(value.trim()).replace(/<[^>]+>/g, ""));
+        const translated = translateSource(value.trim());
+        if (translated) el.setAttribute(name, translated.replace(/<[^>]+>/g, ""));
       });
     });
 
