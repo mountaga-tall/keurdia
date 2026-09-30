@@ -143,6 +143,10 @@
     ["Fermer", "Close"],
     ["Précédente", "Previous"],
     ["Suivante", "Next"],
+    ["Navigation", "Navigation"],
+    ["Réservation", "Booking"],
+    ["Chargement…", "Loading…"],
+    ["Nos espaces", "Our spaces"],
     ["Un espace élégant et chaleureux pensé pour un séjour confortable.", "An elegant, welcoming space designed for a comfortable stay."],
     ["Une atmosphère raffinée associant modernité et authenticité.", "A refined atmosphere combining modernity and authenticity."],
     ["Un cocon contemporain avec une identité élégante et chaleureuse.", "A contemporary cocoon with an elegant, welcoming identity."],
@@ -279,6 +283,7 @@
     localStorage.setItem("keurdia-lang", language);
     state.language = language;
     updateWhatsAppLinks();
+    translateCompoundComponents(language);
   }
 
   function ensureLanguageStyles() {
@@ -306,6 +311,29 @@
     toggle.before(wrap);
     wrap.querySelectorAll("[data-lang]").forEach(button => {
       button.addEventListener("click", () => translateContent(button.dataset.lang));
+    });
+  }
+
+  function translateCompoundComponents(language) {
+    const t = key => {
+      const value = translateSource(key);
+      return language === "en" && value ? value : key;
+    };
+
+    document.querySelectorAll(".side-nav a").forEach(link => {
+      const spans = link.querySelectorAll("span");
+      if (spans.length >= 2) spans[1].textContent = t(spans[1].textContent.trim());
+    });
+
+    document.querySelectorAll(".menu-book span").forEach(el => {
+      el.textContent = t("Réserver sur WhatsApp");
+    });
+
+    document.querySelectorAll(".footer-links h4").forEach(el => {
+      const source = el.textContent.trim();
+      if (source === "Navigation" || source === "Réservation" || (language === "en" && (source === "Navigation" || source === "Booking"))) {
+        el.textContent = language === "en" ? (source === "Réservation" ? "Booking" : "Navigation") : (source === "Booking" ? "Réservation" : "Navigation");
+      }
     });
   }
 
