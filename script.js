@@ -171,6 +171,7 @@
     ["Navigation", "Navigation"],
     ["Réservation", "Booking"],
     ["Chargement…", "Loading…"],
+    ["Préparation de votre expérience", "Preparing your experience"],
     ["Nos espaces", "Our spaces"],
     ["Un espace élégant et chaleureux pensé pour un séjour confortable.", "An elegant, welcoming space designed for a comfortable stay."],
     ["Une atmosphère raffinée associant modernité et authenticité.", "A refined atmosphere combining modernity and authenticity."],
