@@ -164,7 +164,7 @@
     ["Choisissez votre appartement", "Choose your <em>apartment</em>"],
     ["Une réponse directe", "A direct <em>response</em>"],
     ["Réservez votre expérience", "Book your <em>experience</em>"],
-    ["Plus qu'un séjour,une sensation.", "More than a stay,<br><em>a feeling.</em>"],
+    ["Plus qu'un séjour, une sensation.", "More than a stay,<br><em>a feeling.</em>"],
     ["Choisissez votre appartement →", "Choose your apartment →"],
     ["Voir les appartements →", "View apartments →"],
     ["Explorer les appartements →", "Explore the apartments →"],
@@ -220,9 +220,9 @@
 
   function translateSource(source) {
     if (translationHtml.has(source)) return translationHtml.get(source);
-    const apartmentNumber = source.match(/^Appartement (\\d+)$/);
+    const apartmentNumber = source.match(/^Appartement (\d+)$/);
     if (apartmentNumber) return `Apartment ${apartmentNumber[1]}`;
-    const loaded = source.match(/^(\\d+) photo chargée$/);
+    const loaded = source.match(/^(\d+) photo chargée$/);
     if (loaded) return `${loaded[1]} photo loaded`;
     return null;
   }
