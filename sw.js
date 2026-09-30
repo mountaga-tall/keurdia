@@ -1,4 +1,4 @@
-const CACHE = "keurdia-v19";
+const CACHE = "keurdia-v20";
 const CORE = [
   "./",
   "./index.html",
@@ -18,8 +18,9 @@ const CORE = [
   "./thiossane.html",
   "./waalo.html",
   "./wuri.html",
-  "./style.css?v=15",
-  "./script.js?v=18",
+  "./style.css?v=16",
+  "./script.js?v=19",
+  "./amenities.js?v=1",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png",
