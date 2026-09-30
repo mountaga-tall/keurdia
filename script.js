@@ -160,8 +160,13 @@
   ]);
 
   const originalNodes = new Map();
+  const complexOriginals = new Map();
   document.querySelectorAll("body *:not(script):not(style)").forEach(el => {
     if (el.children.length === 0 && el.textContent.trim()) originalNodes.set(el, el.innerHTML);
+  });
+
+  document.querySelectorAll("h1,h2,h3,h4,a,button").forEach(el => {
+    if (el.children.length > 0) complexOriginals.set(el, el.innerHTML);
   });
 
   const originalAttrs = new Map();
@@ -210,11 +215,14 @@
       el.innerHTML = language === "en" ? translationHtml.get(source) : html;
     });
 
-    document.querySelectorAll("h1,h2,h3,h4,a,button").forEach(el => {
-      if (el.children.length === 0) return;
-      const source = el.textContent.replace(/\s+/g, " ").trim();
-      const translated = language === "en" ? complexTranslations.get(source) : null;
-      if (language === "en" && translated) el.innerHTML = translated;
+    complexOriginals.forEach((html, el) => {
+      if (language === "fr") {
+        el.innerHTML = html;
+        return;
+      }
+      const source = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+      const translated = complexTranslations.get(source);
+      if (translated) el.innerHTML = translated;
     });
 
     originalAttrs.forEach((attrs, el) => {
