@@ -424,13 +424,13 @@
       });
 
       const email = document.getElementById("email");
-      if (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email.value.trim())) {
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
         if (email) invalid(email);
         ok = false;
       }
 
       const phone = document.getElementById("phone");
-      const digits = phone?.value.replace(/\\D/g, "") || "";
+      const digits = phone?.value.replace(/\D/g, "") || "";
       if (digits.length < 6 || digits.length > 15) {
         if (phone) invalid(phone);
         ok = false;
