@@ -144,6 +144,21 @@
     ["Suivante", "Next"]
   ]);
 
+  const complexTranslations = new Map([
+    ["Un lieu pensé pour vous", "Un lieu pensé pour <em>vous</em>"],
+    ["13 univers, une seule adresse", "13 worlds, <em>one address</em>"],
+    ["Prêt à découvrir Keur Dia ?", "Ready to discover <em>Keur Dia</em>?"],
+    ["Choisissez votre appartement", "Choose your <em>apartment</em>"],
+    ["Une réponse directe", "A direct <em>response</em>"],
+    ["Réservez votre expérience", "Book your <em>experience</em>"],
+    ["Plus qu'un séjour,une sensation.", "More than a stay,<br><em>a feeling.</em>"],
+    ["Choisissez votre appartement →", "Choose your apartment →"],
+    ["Voir les appartements →", "View apartments →"],
+    ["Explorer les appartements →", "Explore the apartments →"],
+    ["Voir la galerie →", "View gallery →"],
+    ["Ouvrir →", "Open →"]
+  ]);
+
   const originalNodes = new Map();
   document.querySelectorAll("body *:not(script):not(style)").forEach(el => {
     if (el.children.length === 0 && el.textContent.trim()) originalNodes.set(el, el.innerHTML);
@@ -193,6 +208,13 @@
         return;
       }
       el.innerHTML = language === "en" ? translationHtml.get(source) : html;
+    });
+
+    document.querySelectorAll("h1,h2,h3,h4,a,button").forEach(el => {
+      if (el.children.length === 0) return;
+      const source = el.textContent.replace(/\s+/g, " ").trim();
+      const translated = language === "en" ? complexTranslations.get(source) : null;
+      if (language === "en" && translated) el.innerHTML = translated;
     });
 
     originalAttrs.forEach((attrs, el) => {
