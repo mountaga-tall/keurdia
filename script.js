@@ -279,14 +279,43 @@
   }
 
   function translateContent(language) {
-    originalNodes.forEach((html, el) => {
-      const source = html.replace(/<[^>]+>/g, "").trim();
-      const translated = translateSource(source);
-      if (!translated) {
-        el.innerHTML = html;
-        return;
+    const contentReplacements = [
+      ["Confort & élégance", "Comfort & elegance"],
+      ["Accueil", "Home"],
+      ["Appartements", "Apartments"],
+      ["Expérience", "Experience"],
+      ["Réserver sur WhatsApp", "Book on WhatsApp"],
+      ["Disponibilités & tarifs", "Availability & rates"],
+      ["Réserver", "Book now"],
+      ["Découvrir les appartements", "Discover the apartments"],
+      ["Voir les 13 appartements", "See all 13 apartments"],
+      ["Découvrir", "Discover"],
+      ["Ouvrir", "Open"],
+      ["Voir la galerie", "View gallery"],
+      ["Galerie", "Gallery"],
+      ["Chargement…", "Loading…"],
+      ["Photo indisponible.", "Photo unavailable."],
+      ["Précédente", "Previous"],
+      ["Suivante", "Next"],
+      ["Navigation", "Navigation"],
+      ["Réservation", "Booking"],
+      ["Résidence premium · Dakar", "Premium residence · Dakar"],
+      ["Votre prochaine adresse", "Your next address"],
+      ["Votre séjour", "Your stay"],
+      ["Préparation de votre expérience", "Preparing your experience"]
+    ];
+
+    const replaceText = (value, targetLanguage) => {
+      if (targetLanguage === "fr") return value;
+      let result = value;
+      for (const [fr, en] of contentReplacements) {
+        result = result.split(fr).join(en);
       }
-      el.innerHTML = language === "en" ? translated : html;
+      return result;
+    };
+
+    originalNodes.forEach((html, el) => {
+      el.innerHTML = language === "en" ? replaceText(html, language) : html;
     });
 
     complexOriginals.forEach((html, el) => {
@@ -296,17 +325,12 @@
       }
       const source = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
       const translated = complexTranslations.get(source) || translateSource(source);
-      if (translated) el.innerHTML = translated;
+      el.innerHTML = translated || replaceText(html, language);
     });
 
     originalAttrs.forEach((attrs, el) => {
       Object.entries(attrs).forEach(([name, value]) => {
-        if (language === "fr") {
-          el.setAttribute(name, value);
-          return;
-        }
-        const translated = translateSource(value.trim());
-        if (translated) el.setAttribute(name, translated.replace(/<[^>]+>/g, ""));
+        el.setAttribute(name, language === "en" ? replaceText(value, language) : value);
       });
     });
 
