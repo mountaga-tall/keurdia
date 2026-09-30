@@ -86,6 +86,7 @@
     ["Contactez-nous directement pour connaître nos disponibilités.", "Contact us directly for availability."],
     ["Une adresse élégante où l'hospitalité sénégalaise rencontre le confort contemporain.", "An elegant address where Senegalese hospitality meets contemporary comfort."],
     ["Votre séjour", "Your stay"],
+    ["Disponibilités & tarifs", "Availability & rates"],
     ["Choisissez votre appartement", "Choose your apartment"],
     ["Voir les appartements", "View apartments"],
     ["L'expérience Keur Dia", "The Keur Dia experience"],
