@@ -94,6 +94,7 @@
     ["Découvrir les appartements", "Discover the apartments"],
     ["Réserver", "Book now"],
     ["Confort & élégance", "Comfort & elegance"],
+      ["Une résidence élégante et chaleureuse au cœur de Dakar.", "A stylish and welcoming residence in the heart of Dakar."],
     ["Bienvenue chez Keur Dia", "Welcome to Keur Dia"],
     ["Un lieu pensé pour vous", "A place designed for you"],
     ["Keur Ndeye Anta Dia vous accueille dans une résidence pensée pour offrir confort, élégance et sérénité au cœur de Dakar.", "Keur Ndeye Anta Dia welcomes you to a residence designed for comfort, elegance and serenity in the heart of Dakar."],
