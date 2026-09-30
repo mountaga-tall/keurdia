@@ -329,12 +329,6 @@
       el.textContent = t("Réserver sur WhatsApp");
     });
 
-    document.querySelectorAll(".footer-links h4").forEach(el => {
-      const source = el.textContent.trim();
-      if (source === "Navigation" || source === "Réservation" || (language === "en" && (source === "Navigation" || source === "Booking"))) {
-        el.textContent = language === "en" ? (source === "Réservation" ? "Booking" : "Navigation") : (source === "Booking" ? "Réservation" : "Navigation");
-      }
-    });
   }
 
   function updateWhatsAppLinks() {
