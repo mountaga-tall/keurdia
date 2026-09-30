@@ -5,6 +5,31 @@
   const wa = message => `https://wa.me/${WA}?text=${encodeURIComponent(message)}`;
   const state = { language: localStorage.getItem("keurdia-lang") === "en" ? "en" : "fr" };
 
+  const loader = document.getElementById("pageLoader");
+  const loaderStartedAt = performance.now();
+
+  const hideLoader = () => {
+    if (!loader) return;
+    const elapsed = performance.now() - loaderStartedAt;
+    const remaining = Math.max(0, 550 - elapsed);
+    window.setTimeout(() => loader.classList.add("is-hidden"), remaining);
+  };
+
+  const showLoader = () => loader?.classList.remove("is-hidden");
+
+  window.addEventListener("load", hideLoader, { once: true });
+
+  document.addEventListener("click", event => {
+    const link = event.target.closest?.("a[href]");
+    if (!link || !loader || event.defaultPrevented) return;
+    if (link.target === "_blank" || link.hasAttribute("download")) return;
+    if (link.origin !== location.origin) return;
+    const url = new URL(link.href);
+    if (url.pathname === location.pathname && url.search === location.search && url.hash) return;
+    if (link.dataset.whatsapp) return;
+    showLoader();
+  });
+
   const year = document.getElementById("year");
   if (year) year.textContent = new Date().getFullYear();
 
