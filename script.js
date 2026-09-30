@@ -174,7 +174,9 @@
     ["Voir les appartements →", "View apartments →"],
     ["Explorer les appartements →", "Explore the apartments →"],
     ["Voir la galerie →", "View gallery →"],
-    ["Ouvrir →", "Open →"]
+    ["Ouvrir →", "Open →"],
+    ["Ouvrir", "Open"],
+    ["Chargement", "Loading"]
   ]);
 
   const originalNodes = new Map();
@@ -186,6 +188,15 @@
   document.querySelectorAll("h1,h2,h3,h4,a,button").forEach(el => {
     if (el.children.length > 0) complexOriginals.set(el, el.innerHTML);
   });
+
+  const originalTextNodes = new Map();
+  const textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  while (textWalker.nextNode()) {
+    const node = textWalker.currentNode;
+    if (node.parentElement?.closest("script,style")) continue;
+    const value = node.nodeValue || "";
+    if (value.trim()) originalTextNodes.set(node, value);
+  }
 
   const originalAttrs = new Map();
   document.querySelectorAll("input,textarea,button,a,[aria-label]").forEach(el => {
@@ -230,6 +241,15 @@
     const loaded = source.match(/^(\d+) photo chargée$/);
     if (loaded) return `${loaded[1]} photo loaded`;
     return null;
+  }
+
+  function translateTextNodes(language) {
+    originalTextNodes.forEach((original, node) => {
+      if (!node.isConnected) return;
+      const source = original.trim();
+      const translated = translateSource(source);
+      node.nodeValue = translated && language === "en" ? original.replace(source, translated) : original;
+    });
   }
 
   function translateContent(language) {
@@ -283,6 +303,7 @@
     localStorage.setItem("keurdia-lang", language);
     state.language = language;
     updateWhatsAppLinks();
+    translateTextNodes(language);
     translateCompoundComponents(language);
   }
 
